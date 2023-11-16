@@ -7,7 +7,7 @@ export default function RepositoryInfo({
   description,
   OwnerImg,
   ownerLogin,
-  issues
+  issues,
 }) {
   return (
     <div className={styles.Container}>
@@ -19,16 +19,16 @@ export default function RepositoryInfo({
       </header>
 
       <ul className={styles.IssueList}>
-        {issues.map(issue => (
-            <li key={String(issue.id)}>
-                <img src={issue.user.avatar_url} alt={issue.user.login}/>
-                <div className={styles.info}>
-                    <strong>
-                        <a href={issue.html_url}>{issue.title}</a>
-                    </strong>
-                    <p>{issue.user.login}</p>
-                </div>
-            </li>
+        {issues.map((issue) => (
+          <li key={String(issue.id)}>
+            <img src={issue.user.avatar_url} alt={issue.user.login} />
+            <div className={styles.info}>
+              <strong>
+                <a href={issue.html_url}>{issue.title}</a>
+              </strong>
+              <p>{issue.user.login}</p>
+            </div>
+          </li>
         ))}
       </ul>
     </div>

@@ -33,6 +33,14 @@ input{
    font-size: 16px;
 }
 
+.error {
+   flex: 1;
+   border: 1px solid #DC2700;
+   padding: 10px 15px;
+   border-radius: 4px;
+   font-size: 16px;
+}
+
 .SubmitButton{
    background: #7159c1;
    border: 0;

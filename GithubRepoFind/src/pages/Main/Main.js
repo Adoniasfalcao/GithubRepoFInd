@@ -9,6 +9,7 @@ export default class Main extends Component {
     newRepository: "",
     repositories: [],
     loading: false,
+    error: false,
   };
 
   //Carregar os dados do localStorage
@@ -35,25 +36,43 @@ export default class Main extends Component {
   //Alteração do estado
   handleSubmit = async (e) => {
     e.preventDefault();
+    const { newRepository, repositories } = this.state;
+
+    //Verifica se o repositório já faz parte da lista
+    const repositoryExists = repositories.some(
+      (repo) => repo.name === newRepository
+    );
 
     this.setState({ loading: true });
 
-    const { newRepository, repositories } = this.state;
-    const response = await api.get(`/repos/${newRepository}`);
+    try {
+      const response = await api.get(`/repos/${newRepository}`);
+      const data = {
+        name: response.data.full_name,
+      };
 
-    const data = {
-      name: response.data.full_name,
-    };
-
-    this.setState({
-      repositories: [...repositories, data],
-      newRepository: "",
-      loading: false,
-    });
+      if (repositoryExists) {
+        throw new Error("Repositório já está na lista");
+      }
+  
+      this.setState({
+        repositories: [...repositories, data],
+        newRepository: "",
+        loading: false,
+        error: false,
+      });
+      
+    } catch (err) {
+      this.setState({
+        loading: false,
+        error: true,
+      });
+      alert(`Não foi possível encontrar o repositório ${err}`);
+    }
   };
 
   render() {
-    const { repositories, newRepository, loading } = this.state;
+    const { repositories, newRepository, loading, error } = this.state;
 
     return (
       <div className={styles.Container}>
@@ -68,6 +87,7 @@ export default class Main extends Component {
             placeholder="Adicionar repositório"
             value={newRepository}
             onChange={this.handleInputChange}
+            className={error ? styles.error : styles.input}
           />
 
           <button
@@ -86,7 +106,10 @@ export default class Main extends Component {
           {repositories.map((repo) => (
             <li key={repo.name} className={styles.listItems}>
               <span>{repo.name}</span>
-              <Link to={`/repository/${encodeURIComponent(repo.name)}`} className={styles.repoLink}>
+              <Link
+                to={`/repository/${encodeURIComponent(repo.name)}`}
+                className={styles.repoLink}
+              >
                 Detalhes
               </Link>
             </li>
