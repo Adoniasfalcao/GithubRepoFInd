@@ -41,6 +41,7 @@ export default function Repository() {
           OwnerImg={repos.owner.avatar_url}
           description={repos.description}
           ownerLogin={repos.owner.login}
+          issues={issues}
         />
       )}
     </>
