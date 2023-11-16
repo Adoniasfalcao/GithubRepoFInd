@@ -43,5 +43,39 @@ input{
    display: flex;
    justify-content: center;
    align-items: center;
-   
+
+}
+
+.disabled{
+   background: #7159c1;
+   border: 0;
+   padding: 0 15px;
+   margin-left: 10px;
+   border-radius: 4px;
+   padding-right: 5px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   cursor: not-allowed;
+   opacity: 0.6;
+}
+
+.listRepositories {
+   list-style: none;
+   margin-top: 30px;
+
+}
+
+.listItems {
+   padding: 15px 0;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+   border-top: 1px solid #7159c1;
+}
+
+.repoLink {
+   color: #7159c1;
+   text-decoration: none;
 }

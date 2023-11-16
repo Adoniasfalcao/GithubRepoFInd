@@ -1,25 +1,59 @@
 import React, { Component } from "react";
-import { FaGithubAlt, FaPlus } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaGithubAlt, FaPlus, FaSpinner } from "react-icons/fa";
+import api from "../../services/api";
 import styles from "./Main.module.css";
 
 export default class Main extends Component {
   state = {
     newRepository: "",
+    repositories: [],
+    loading: false,
   };
 
+  //Carregar os dados do localStorage
+  componentDidMount() {
+    const repositories = localStorage.getItem("repositories");
+
+    if (repositories) {
+      this.setState({ repositories: JSON.parse(repositories) });
+    }
+  }
+
+  //Salvar os dados do localStorage
+  componentDidUpdate(_, prevState) {
+    const { repositories } = this.state;
+    if (prevState.repositories !== this.state.repositories) {
+      localStorage.setItem("repositories", JSON.stringify(repositories));
+    }
+  }
   //Alteração do input
   handleInputChange = (e) => {
     this.setState({ newRepository: e.target.value });
   };
 
   //Alteração do estado
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(this.state.newRepository);
+
+    this.setState({ loading: true });
+
+    const { newRepository, repositories } = this.state;
+    const response = await api.get(`/repos/${newRepository}`);
+
+    const data = {
+      name: response.data.full_name,
+    };
+
+    this.setState({
+      repositories: [...repositories, data],
+      newRepository: "",
+      loading: false,
+    });
   };
 
   render() {
-    const { newRepository } = this.state;
+    const { repositories, newRepository, loading } = this.state;
 
     return (
       <div className={styles.Container}>
@@ -36,10 +70,28 @@ export default class Main extends Component {
             onChange={this.handleInputChange}
           />
 
-          <button className={styles.SubmitButton} type="submit">
-            <FaPlus />
+          <button
+            className={loading ? styles.disabled : styles.SubmitButton}
+            type="submit"
+          >
+            {loading ? (
+              <FaSpinner color="#FFF" size={14} />
+            ) : (
+              <FaPlus color="#FFF" size={14} />
+            )}
           </button>
         </form>
+
+        <ul className={styles.listRepositories}>
+          {repositories.map((repo) => (
+            <li key={repo.name} className={styles.listItems}>
+              <span>{repo.name}</span>
+              <Link to={`/repository/${encodeURIComponent(repo.name)}`} className={styles.repoLink}>
+                Detalhes
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }

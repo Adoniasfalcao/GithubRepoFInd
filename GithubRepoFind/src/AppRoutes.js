@@ -8,7 +8,7 @@ export default function AppRoutes() {
     <BrowserRouter>
       <Routes>
         <Route path="/" exact Component={Main} />
-        <Route path="/repository" Component={Repository} />
+        <Route path="/repository/:repository" Component={Repository} />
       </Routes>
     </BrowserRouter>
   );
